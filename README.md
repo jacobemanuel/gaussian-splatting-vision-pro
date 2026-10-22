@@ -59,7 +59,7 @@ flowchart LR
 
 Frame rate alone hides too much on a headset, so I built a native visionOS measurement app around a Metal splat renderer (a patched open-source fork):
 
-- **GPU duty per window**, from the command buffers' own start and end times, taken as the union of busy intervals over the window, next to the achieved cadence and the thermal state.
+- **GPU duty per window**: the union of the command buffers' busy intervals, from their own GPU timestamps, as a share of the window, recorded with the achieved frame cadence and the thermal state.
 - **A load ladder** of 1, 3, 5 and 8 copies of a model, because one copy does not stress the chip.
 - **Rested blocks:** a heavy block starts only after a 900 s rest, and a sitting ends after 45 minutes on the head.
 - **Sustained runs** that stop at the first non-nominal thermal sample or after 1,200 s, so the stop itself is the measurement.
@@ -71,8 +71,8 @@ Frame rate alone hides too much on a headset, so I built a native visionOS measu
 ## What the headset taught me
 
 - **The display mode is part of the measurement.** Two early sessions with the same conditions ran at 90 Hz and at 100 Hz, and the median GPU time per condition moved by −6 % to +55 %. Inside one export this was invisible; comparing two exports of identical conditions made it obvious. From then on, windows were never pooled across modes.
-- **Lighting does not control the mode.** If the room's lighting controlled the refresh mode, the protocol could have fixed it. A palindromic lamp test (on, on, off, off, off, off, on, on, so a linear drift with time cancels), three repetitions, with the criterion written an hour before the first window, found it not controllable. The mode stays a recorded factor, and the lighting is standardised anyway.
-- **A watchdog bug, modelled and fixed without a new build.** Mid-campaign, visionOS killed the app five times. Crash reports showed the main thread decoding the growing on-device checkpoints. I calibrated the scan (0.79 s + 0.099 s per MB, reaching the 10 s watchdog limit at about 80 to 90 MB) and finished on the same build: each completed stage was exported, its hash verified, the copy archived, and the on-device file replaced by a stub. No accepted window was lost or repeated.
+- **Lighting does not control the mode.** If the room's lighting controlled the refresh mode, the protocol could have fixed it. I tested that with a palindromic lamp sequence (on, on, off, off, off, off, on, on, so a linear drift over time cancels out) in three repetitions, with the pass criterion written an hour before the first window. The mode was not controllable, so it stays a recorded factor; the lighting is standardised anyway.
+- **A watchdog bug, modelled and fixed without a new build.** Mid-campaign, visionOS killed the app five times. Crash reports showed the main thread decoding the growing on-device checkpoints. I calibrated the scan time against checkpoint size (0.79 s plus 0.099 s per MB, with the 10 s watchdog limit at about 80 to 90 MB) and finished on the same build: each completed stage was exported, its hash verified, the copy archived, and the on-device file replaced by a stub. No accepted window was lost or repeated.
 - **Failures stay in the record.** 75 block attempts produced the 195 windows. 18 ended at the gates with no window, and the study reports every one of them, including the stalls whose cause was never proven.
 
 ## Findings, in broad strokes
@@ -94,15 +94,13 @@ With hundreds of models, the easiest results to produce are wrong ones. Most of 
 - **Unblinding by reproduction.** Before anyone read a cost table, an independent rerun of the analysis had to reproduce every output hash.
 - **Conventions stress-tested.** Pixel sampling, background compositing and five interval constructions were re-run to see which conclusions survive.
 
-A result is only as good as the ways it was allowed to fail, so I keep those ways explicit.
-
 ## My contribution
 
 I ran the project end to end: the research question and the study design, the rendering and training pipeline on cloud GPUs, the scoring code and the statistics, the native visionOS measurement app, every session on the headset, and the release that rebuilds every number.
 
 ## Why it matters
 
-For engineering, the study is a complete path from a 3D asset to a measured experience on a standalone headset: training infrastructure, a renderer on Metal, on-device instrumentation and a release someone else can rerun. For research, it is a controlled experiment with pre-registered analyses, blind reads, disclosed failures and every number traceable to a file. The same habits decide whether an XR system is a convincing demo or a dependable experimental apparatus.
+For engineering, the study is a complete path from a 3D asset to a measured experience on a standalone headset: training infrastructure, a renderer on Metal, on-device instrumentation and a release someone else can rerun. For research, it is a controlled experiment with pre-registered analyses, blind reads, disclosed failures and every number traceable to a file.
 
 ## Stack
 
@@ -112,7 +110,7 @@ For engineering, the study is a complete path from a 3D asset to a measured expe
 
 ## Scope
 
-This page is a portfolio case study of the question, the method and the engineering. The detailed results, the code, the trained models and the per-view records are not published here; they are available on request. All data was generated by me from public models.
+This page is a portfolio case study of the question, the method and the engineering. The results, the code, the trained models and the per-view records are not published here. All data was generated by me from public models.
 
 ## Credits
 
