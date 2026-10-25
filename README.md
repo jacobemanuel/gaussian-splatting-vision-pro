@@ -8,7 +8,7 @@
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
-| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich, 2026; Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards; results, code and data on request |
+| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich, 2026; Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards; results, code and data are not public |
 
 **In numbers**
 
@@ -80,7 +80,7 @@ Frame rate alone hides too much on a headset, so I built a native visionOS measu
 - The choice I studied matters twice: it changes how faithful the model is, on unseen views too, and it changes what the headset pays to draw it. How much depends strongly on the object; a single benchmark object would have told a different story depending on which one it was.
 - A follow-up experiment of 98 trainings, planned and hashed before it started, narrowed down where the effect comes from.
 
-Detailed results are available on request.
+Detailed results are not public.
 
 ## Where the study could lie to me
 
