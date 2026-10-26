@@ -2,7 +2,7 @@
 
 # Gaussian Splatting on Apple Vision Pro
 
-**A splat model that looks perfect on a laptop is only half done. The other half gets measured on a standalone headset that draws every frame twice, in GPU time, frame rate and heat.**
+A controlled study of one training choice in 3D Gaussian Splatting, from public 3D models to measurements on Apple Vision Pro. It measures how faithful the trained models are and what they cost to render on the headset.
 
 `3D Gaussian Splatting` · `Apple Vision Pro` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
 
@@ -18,13 +18,13 @@
 - **195** accepted 30-second measurement windows on Apple Vision Pro. They came from **75** block attempts in **7** stages, all on one locked build.
 - **545,903** per-frame GPU timings read from Metal command buffers, plus the thermal state sampled at **4 Hz** in every window.
 - **228** device analysis tables that one command regenerates byte for byte, with **277** automated tests behind them.
-- **5** recompute commands that rebuild every reported number from the raw records. The offline one alone runs **374** checks, with **0** mismatches when you run it from the unpacked release archives.
+- **5** recompute commands that rebuild every reported number from the raw records. The offline one alone runs **374** checks, with **0** mismatches when run from the unpacked release archives.
 
 ## The question
 
 3D Gaussian Splatting turns a set of images into a cloud of soft, coloured ellipsoids that render in real time. A desktop GPU has no trouble with that. Apple Vision Pro has to render every frame for both eyes and keep pace with a display running at 90 to 100 Hz. It also has to stay inside the thermal limits of a headset and hold up while the user walks around the object.
 
-Splat pipelines make a lot of design choices during training. Most of them get judged by one number on a benchmark. I isolated one of those choices and followed it all the way to the device. How faithful is the model, on the views it was trained on and on views it never saw? And what does it cost the headset to draw it? Answering both takes a controlled experiment offline and a measurement instrument on the headset, built to the same standard.
+Splat pipelines make a lot of design choices during training and most of them get judged by one number on a benchmark. I isolated one of those choices and followed it to the device. The study asks how faithful the model is, on the views it was trained on and on views it never saw, and what it costs the headset to draw it. That takes a controlled experiment offline and a measurement app on the headset.
 
 ## From 3D model to splat to score
 
@@ -57,34 +57,34 @@ flowchart LR
 
 *Screenshots from Apple Vision Pro in passthrough.*
 
-Frame rate alone hides too much on a headset. So I built a native visionOS measurement app around a Metal splat renderer (a patched open-source fork):
+Frame rate alone isn't enough on a headset, so I built a native visionOS measurement app around a Metal splat renderer (a patched open-source fork):
 
 - **GPU duty per window**: the union of the command buffers' busy intervals (from their own GPU timestamps) as a share of the window. It's recorded with the achieved frame cadence and the thermal state.
 - **A load ladder** of 1, 3, 5 and 8 copies of a model because one copy doesn't stress the chip.
 - **Rested blocks:** a heavy block only starts after a 900 s rest. A sitting ends after 45 minutes on the head.
-- **Sustained runs** that stop at the first non-nominal thermal sample or after 1,200 s. That makes the stop itself the measurement.
+- **Sustained runs** that stop at the first non-nominal thermal sample or after 1,200 s. The time until the stop is the measurement.
 - **A saturation rule** fixed before the data. Any window that hits the GPU ceiling gets flagged and kept out of the averages.
 - **The plan inside the binary:** the hashes of the pre-registration and the capture plan are compiled into the app. They also get written into every window record.
 
 *Status: complete, and one command regenerates all 228 device tables byte for byte.*
 
-## What the headset taught me
+## What I learned on the headset
 
-- **The display mode is part of the measurement.** Two early sessions with the same conditions ran at 90 Hz and at 100 Hz. The median GPU time per condition moved by −6 % to +55 %. You couldn't see this inside one export. Comparing two exports of identical conditions made it obvious. From then on I never pooled windows across modes.
+- **The display mode is part of the measurement.** Two early sessions with the same conditions ran at 90 Hz and at 100 Hz. The median GPU time per condition moved by −6 % to +55 %. It wasn't visible inside one export, only when I compared two exports of identical conditions. From then on I never pooled windows across modes.
 - **Lighting doesn't control the mode.** The protocol could have fixed the refresh mode if the room's lighting controlled it. I tested that with a palindromic lamp sequence (on, on, off, off, off, off, on, on, so a linear drift over time cancels out) in three repetitions. I wrote down the pass criterion an hour before the first window. The mode wasn't controllable so it stays a recorded factor. The lighting is standardised anyway.
 - **A watchdog bug, modelled and fixed without a new build.** Mid-campaign, visionOS killed the app five times. Crash reports showed the main thread decoding the growing on-device checkpoints. I calibrated the scan time against checkpoint size (0.79 s plus 0.099 s per MB, with the 10 s watchdog limit at about 80 to 90 MB) and finished on the same build. I exported each completed stage and checked its hash. Then I archived the copy and replaced the on-device file with a stub. No accepted window was lost or repeated.
 - **Failures stay in the record.** 75 block attempts produced the 195 windows. 18 of them ended at the gates with no window. The study reports every one, including the stalls whose cause was never proven.
 
 ## Findings, in broad strokes
 
-- The choice I studied matters twice. It changes how faithful the model is, on unseen views too. It also changes what the headset pays to draw it. How much it matters depends strongly on the object. With a single benchmark object the story would have changed depending on which one it was.
+- The choice I studied changes both how faithful the model is, on unseen views too, and what it costs the headset to draw it. How much depends strongly on the object. With a single benchmark object the conclusion would depend on which object was picked.
 - A follow-up experiment of 98 trainings narrowed down where the effect comes from. I planned and hashed it before it started.
 
 Detailed results are not public.
 
-## Where the study could lie to me
+## Guarding against wrong results
 
-With hundreds of models the easiest results to produce are wrong ones. Most of the work went into making that hard:
+With hundreds of models it's easy to produce wrong results. Most of the work went into preventing that:
 
 - **Plans before data.** I wrote down and hashed the main analysis, the device protocol and the follow-up before their data existed. The device study was pre-registered. Its ten amendments and every deviation are dated and kept in the record.
 - **Audits on every trained model** that check each training did what its configuration said.
@@ -98,9 +98,9 @@ With hundreds of models the easiest results to produce are wrong ones. Most of t
 
 I ran the project end to end: the research question and study design, the rendering and training pipeline on cloud GPUs, the scoring code and statistics, and the native visionOS measurement app. I also did every session on the headset and put together the release that rebuilds every number.
 
-## Why it matters
+## What it covers
 
-For engineering the study is a complete path from a 3D asset to a measured experience on a standalone headset. That covers training infrastructure, a renderer on Metal, on-device instrumentation and a release someone else can rerun. As research it's a controlled experiment with pre-registered analyses, blind reads, disclosed failures and every number traceable to a file.
+For engineering the study is a complete path from a 3D asset to measurements on a standalone headset. That covers training infrastructure, a renderer on Metal, on-device instrumentation and a release someone else can rerun. As research it's a controlled experiment with pre-registered analyses, blind reads, disclosed failures and every number traceable to a file.
 
 ## Stack
 
