@@ -2,9 +2,9 @@
 
 # Gaussian Splatting on Apple Vision Pro
 
-A controlled study of one training choice in 3D Gaussian Splatting, from public 3D models to measurements on Apple Vision Pro. It measures how faithful the trained models are and what they cost to render on the headset.
+A controlled study of one training choice in 3D Gaussian Splatting, from public 3D models to measurements on the headset. It measures how faithful the trained models are and what they cost to render.
 
-`3D Gaussian Splatting` · `Apple Vision Pro` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
+`3D Gaussian Splatting` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
@@ -15,14 +15,14 @@ A controlled study of one training choice in 3D Gaussian Splatting, from public 
 - **470** Gaussian splat models trained, 30,000 steps each. That's **14.1 million** optimisation steps. Every model is identified by its SHA-256 hash and audited against its configuration.
 - **750** ground-truth images. I rendered five public 3D models from **150** directions each, at **2048 × 2048** px in Blender Cycles.
 - **203,520** per-view fidelity scores from my own CPU splat rasterizer. Each score is tied to a hashed model and a camera.
-- **195** accepted 30-second measurement windows on Apple Vision Pro. They came from **75** block attempts in **7** stages, all on one locked build.
+- **195** accepted 30-second measurement windows on the headset. They came from **75** block attempts in **7** stages, all on one locked build.
 - **545,903** per-frame GPU timings read from Metal command buffers, plus the thermal state sampled at **4 Hz** in every window.
 - **228** device analysis tables that one command regenerates byte for byte, with **277** automated tests behind them.
 - **5** recompute commands that rebuild every reported number from the raw records. The offline one alone runs **374** checks, with **0** mismatches when run from the unpacked release archives.
 
 ## The question
 
-3D Gaussian Splatting turns a set of images into a cloud of soft, coloured ellipsoids that render in real time. A desktop GPU has no trouble with that. Apple Vision Pro has to render every frame for both eyes and keep pace with a display running at 90 to 100 Hz. It also has to stay inside the thermal limits of a headset and hold up while the user walks around the object.
+3D Gaussian Splatting turns a set of images into a cloud of soft, coloured ellipsoids that render in real time. A desktop GPU has no trouble with that. The headset has to render every frame for both eyes and keep pace with a display running at 90 to 100 Hz. It also has to stay inside the thermal limits of a headset and hold up while the user walks around the object.
 
 Splat pipelines make a lot of design choices during training and most of them get judged by one number on a benchmark. I isolated one of those choices and followed it to the device. The study asks how faithful the model is, on the views it was trained on and on views it never saw, and what it costs the headset to draw it. That takes a controlled experiment offline and a measurement app on the headset.
 
@@ -51,11 +51,11 @@ flowchart LR
 
 | Eight plants | Five gearboxes |
 |---|---|
-| ![Eight Gaussian splat models of an industrial plant on Apple Vision Pro](media/headset-plant-8-copies.jpg) | ![Five Gaussian splat models of a gearbox on Apple Vision Pro](media/headset-gearbox-5-copies.jpg) |
+| ![Eight Gaussian splat models of an industrial plant on the headset](media/headset-plant-8-copies.jpg) | ![Five Gaussian splat models of a gearbox on the headset](media/headset-gearbox-5-copies.jpg) |
 | **Three gearboxes** | **The jet engine, close up** |
-| ![Three Gaussian splat models of a gearbox on Apple Vision Pro, in passthrough](media/headset-gearbox-3-copies.jpg) | ![A Gaussian splat model of a jet engine on Apple Vision Pro, in passthrough](media/headset-jet-engine.jpg) |
+| ![Three Gaussian splat models of a gearbox on the headset, in passthrough](media/headset-gearbox-3-copies.jpg) | ![A Gaussian splat model of a jet engine on the headset, in passthrough](media/headset-jet-engine.jpg) |
 
-*Screenshots from Apple Vision Pro in passthrough.*
+*Screenshots from the headset in passthrough.*
 
 Frame rate alone isn't enough on a headset, so I built a native visionOS measurement app around a Metal splat renderer (a patched open-source fork):
 
@@ -106,7 +106,7 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 
 | Offline | On device | Analysis and release |
 |---|---|---|
-| Blender Cycles, OpenSplat (patched, CUDA, LibTorch), PyTorch, LPIPS, a NumPy EWA splat rasterizer, NVIDIA L4 GPUs on Google Cloud, job queues with model checks | Swift, SwiftUI, Metal, RealityKit, visionOS on Apple Vision Pro | Python (NumPy, SciPy), hierarchical and crossed bootstraps, variance-component checks, SHA-256 manifests |
+| Blender Cycles, OpenSplat (patched, CUDA, LibTorch), PyTorch, LPIPS, a NumPy EWA splat rasterizer, NVIDIA L4 GPUs on Google Cloud, job queues with model checks | Swift, SwiftUI, Metal, RealityKit, visionOS | Python (NumPy, SciPy), hierarchical and crossed bootstraps, variance-component checks, SHA-256 manifests |
 
 ## Scope
 
