@@ -108,6 +108,10 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 |---|---|---|
 | Blender Cycles, OpenSplat (patched, CUDA, LibTorch), PyTorch, LPIPS, a NumPy EWA splat rasterizer, NVIDIA L4 GPUs on Google Cloud, job queues with model checks | Swift, SwiftUI, Metal, RealityKit, visionOS | Python (NumPy, SciPy), hierarchical and crossed bootstraps, variance-component checks, SHA-256 manifests |
 
+## Also public
+
+Outside this study I work on large Gaussian Splatting scenes for standalone headsets. One scene I captured and trained myself, with about 24 million splats, is public on [SuperSplat](https://superspl.at/scene/193ca7e8). The timing patch from the measurement app is offered upstream as [MetalSplatter pull request #73](https://github.com/scier/MetalSplatter/pull/73).
+
 ## Scope
 
 This page is a portfolio case study of the question, the method and the engineering. The results, the code, the trained models and the per-view records are not published here. I generated all of the data myself, from public models.
