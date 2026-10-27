@@ -53,7 +53,7 @@ flowchart LR
 |---|---|
 | ![Eight Gaussian splat models of an industrial plant on the headset](media/headset-plant-8-copies.jpg) | ![Five Gaussian splat models of a gearbox on the headset](media/headset-gearbox-5-copies.jpg) |
 | **Three gearboxes** | **The jet engine, close up** |
-| ![Three Gaussian splat models of a gearbox on the headset, in passthrough](media/headset-gearbox-3-copies.jpg) | ![A Gaussian splat model of a jet engine on the headset, in passthrough](media/headset-jet-engine.jpg) |
+| ![Three copies of a Gaussian splat model of a gearbox on the headset, in passthrough](media/headset-gearbox-3-copies.jpg) | ![A Gaussian splat model of a jet engine on the headset, in passthrough](media/headset-jet-engine.jpg) |
 
 *Screenshots from the headset in passthrough.*
 
