@@ -4,7 +4,7 @@
 
 A controlled study of one training choice in 3D Gaussian Splatting, from public 3D models to measurements on the headset. It measures how faithful the trained models are and what they cost to render.
 
-`3D Gaussian Splatting` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
+`3D Gaussian Splatting` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `CUDA` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
@@ -34,7 +34,7 @@ flowchart LR
     R --> T["3DGS training<br/>patched OpenSplat<br/>NVIDIA L4, Google Cloud"]
     T --> S["Scoring<br/>object-masked LPIPS<br/>training and unseen views"]
     T --> P["Packages<br/>PLY, content-hashed"]
-    P --> V["visionOS app<br/>Metal splat renderer"]
+    P --> V["visionOS app<br/>MetalSplatter, patched"]
     V --> I["On-device record<br/>GPU duty, cadence,<br/>thermal state"]
     S --> A["Analysis<br/>plan hashed first"]
     I --> A
@@ -57,7 +57,7 @@ flowchart LR
 
 *Screenshots from the headset in passthrough.*
 
-Frame rate alone isn't enough on a headset, so I built a native visionOS measurement app around a Metal splat renderer (a patched open-source fork):
+Frame rate alone isn't enough on a headset, so I built a native visionOS measurement app. It renders with the open-source [MetalSplatter](https://github.com/scier/MetalSplatter), using [Markus Lanxinger's fork](https://github.com/lanxinger/MetalSplatter). Both are MIT licensed. I patched the renderer to draw several models in one frame and to time every render pass on the GPU, and offered the timing patch upstream as [pull request #73](https://github.com/scier/MetalSplatter/pull/73). The measurement protocol in the app:
 
 - **GPU duty per window**: the union of the command buffers' busy intervals (from their own GPU timestamps) as a share of the window. It's recorded with the achieved frame cadence and the thermal state.
 - **A load ladder** of 1, 3, 5 and 8 copies of a model because one copy doesn't stress the chip.
