@@ -45,7 +45,7 @@ The Bismarck Tower scene combines scans on the ground with a drone flight that c
 
 *The drone's live view on the controller, played twice as fast.*
 
-The flight over Leukerbad comes from the TUM-XR video about the trip, which I edited end to end.
+The flight over Leukerbad comes from [the TUM-XR video about the trip](https://drive.google.com/file/d/1k1klMZtWuolstWEeyUK1F0nhiU4wjV52/view), which I edited end to end.
 
 ![A flight over the Gaussian splat model of Leukerbad](media/leukerbad-twin.gif)
 
