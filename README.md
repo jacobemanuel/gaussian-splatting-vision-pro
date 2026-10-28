@@ -108,9 +108,37 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 |---|---|---|
 | Blender Cycles, OpenSplat (patched, CUDA, LibTorch), PyTorch, LPIPS, a NumPy EWA splat rasterizer, NVIDIA L4 GPUs on Google Cloud, job queues with model checks | Swift, SwiftUI, Metal, RealityKit, visionOS | Python (NumPy, SciPy), hierarchical and crossed bootstraps, variance-component checks, SHA-256 manifests |
 
+## Large scenes
+
+Next to this study I work on large outdoor scenes for standalone headsets. I captured three of them myself and processed the scans in LCC Studio. All three are public on SuperSplat.
+
+| Scene | Splats | Open it |
+|---|---|---|
+| Bismarck Tower near Lake Starnberg, Bavaria, captured from the air and on the ground | 44.5 million | [SuperSplat](https://superspl.at/scene/77398c1a) |
+| Leukerbad, an Alpine town in Valais, Switzerland | 23.3 million | [SuperSplat](https://superspl.at/scene/5fceed98) |
+| Technical University of Munich | 24.1 million | [SuperSplat](https://superspl.at/scene/193ca7e8) |
+
+![A flight over the Gaussian splat model of the Alpine town of Leukerbad](media/leukerbad-twin.gif)
+
+*Leukerbad as a Gaussian splat. The flyover is from the TUM-XR video about the trip, which I made from start to finish.*
+
+On the headset the scenes run with a dynamic level of detail that's computed on the device.
+
+| Leukerbad | Technical University of Munich |
+|---|---|
+| ![The Leukerbad scene on the headset with a dynamic level of detail](media/lod-leukerbad.gif) | ![The TUM scene on the headset with a dynamic level of detail](media/lod-tum.gif) |
+
+The Bismarck Tower scan combines a drone orbit around the tower with scans on the ground.
+
+![The drone's live view on its controller during the orbit around the Bismarck Tower](media/drone-orbit.gif)
+
+*The drone's live view on the controller, played twice as fast.*
+
+The level-of-detail code isn't public yet.
+
 ## Also public
 
-Outside this study I work on large Gaussian Splatting scenes for standalone headsets. One scene I captured and trained myself, with about 24 million splats, is public on [SuperSplat](https://superspl.at/scene/193ca7e8). The timing patch from the measurement app is offered upstream as [MetalSplatter pull request #73](https://github.com/scier/MetalSplatter/pull/73).
+The timing patch from the measurement app is offered upstream as [MetalSplatter pull request #73](https://github.com/scier/MetalSplatter/pull/73).
 
 ## Scope
 
