@@ -1,8 +1,8 @@
-![A gearbox, a jet engine, a Formula 1 car and a carbine rifle, four of the 3D models in the study, rendered in Blender Cycles](media/hero.jpg)
+![A gearbox, a jet engine, a Formula 1 car and a carbine rifle, four of the CAD models in the study, rendered in Blender Cycles](media/hero.jpg)
 
 # Gaussian Splatting on Apple Vision Pro
 
-A controlled study of one training choice in 3D Gaussian Splatting, from public 3D models to measurements on the headset. It measures how faithful the trained models are and what they cost to render.
+A controlled study of one training choice in 3D Gaussian Splatting, from public CAD models to measurements on the headset. Each CAD model is rendered from 150 viewpoints spread evenly over a Fibonacci sphere, Gaussian splats are trained from those images, and the study measures how faithful the trained models are to the CAD original and what they cost to render.
 
 `3D Gaussian Splatting` · `visionOS` · `Metal` · `Swift` · `Python` · `PyTorch` · `CUDA` · `Blender` · `Google Cloud` · `Experimental Design` · `Reproducible Research`
 
@@ -13,14 +13,14 @@ A controlled study of one training choice in 3D Gaussian Splatting, from public 
 ## In short
 
 - **The problem.** Training choices in 3D Gaussian Splatting mostly get judged by one benchmark number on a desktop GPU. On a standalone headset a model also has to be cheap enough to draw for both eyes at 90 to 100 Hz, within the thermal limits of a headset.
-- **What I did.** I isolated one training choice and followed it from public 3D models to the headset: 470 trained models, scored on the views they were trained on and on views they never saw, and a native visionOS app that measures what each model costs on the device.
+- **What I did.** I isolated one training choice and followed it from public CAD models to the headset: renders from 150 viewpoints on a Fibonacci sphere around each model, 470 trained models scored on the views they were trained on and on views they never saw, and a native visionOS app that measures what each model costs on the device.
 - **The result.** The choice changes both how faithful the model is, on unseen views too, and what it costs the headset to draw it. How much depends strongly on the object. On the device the display mode turned out to be part of the measurement: under the same conditions the 90 and 100 Hz modes moved the median GPU time by up to 55%, so the two are never pooled.
 - **The evidence.** Five recompute commands rebuild every reported number from the raw records, and the offline one runs 374 checks with 0 mismatches. The method and the engineering are on this page, and the timing patch is [an open pull request to MetalSplatter](https://github.com/scier/MetalSplatter/pull/73). The results, code and data are private for now.
 
 **In numbers**
 
 - **470** Gaussian splat models trained, 30,000 steps each. Every model is identified by its SHA-256 hash and audited against its configuration.
-- **750** ground-truth images. I rendered five public 3D models from **150** directions each, at **2048 × 2048** px in Blender Cycles.
+- **750** ground-truth images. I rendered five public CAD models from **150** directions each, spread evenly over a Fibonacci sphere, at **2048 × 2048** px in Blender Cycles.
 - **203,520** per-view fidelity scores from my own CPU splat rasterizer. Each score is tied to a hashed model and a camera.
 - **195** accepted 30-second measurement windows on the headset. They came from **75** block attempts in **7** stages, all on one locked build.
 - **545,903** per-frame GPU timings read from Metal command buffers, plus the thermal state sampled at **4 Hz** in every window.
@@ -33,11 +33,11 @@ A controlled study of one training choice in 3D Gaussian Splatting, from public 
 
 Splat pipelines make a lot of design choices during training and most of them get judged by one number on a benchmark. I isolated one of those choices and followed it to the device. The study asks how faithful the model is, on the views it was trained on and on views it never saw, and what it costs the headset to draw it. That takes a controlled experiment offline and a measurement app on the headset.
 
-## From 3D model to splat to score
+## From CAD model to splat to score
 
 ```mermaid
 flowchart LR
-    M["Public 3D models<br/>CC BY 4.0"] --> R["Reference renders<br/>Blender Cycles<br/>150 views, 2048 px"]
+    M["Public CAD models<br/>CC BY 4.0"] --> R["Reference renders<br/>Blender Cycles<br/>150 views on a<br/>Fibonacci sphere, 2048 px"]
     R --> T["3DGS training<br/>patched OpenSplat<br/>NVIDIA L4, Google Cloud"]
     T --> S["Scoring<br/>object-masked LPIPS<br/>training and unseen views"]
     T --> P["Packages<br/>PLY, content-hashed"]
@@ -47,7 +47,7 @@ flowchart LR
     I --> A
 ```
 
-- **Ground truth I control.** Five detailed public models. They go from a gearbox with a cutaway housing and a turbofan engine to a Formula 1 car and an industrial plant with 13,129 mesh parts and 2.56 million triangles. Each is rendered from 150 directions with one Blender Cycles rig. There's no capture noise and no pose estimation. So every difference I measure comes from the splats.
+- **Ground truth I control.** Five detailed public CAD models. They go from a gearbox with a cutaway housing and a turbofan engine to a Formula 1 car and an industrial plant with 13,129 mesh parts and 2.56 million triangles. Each is rendered from 150 directions spread evenly over a Fibonacci sphere, with one Blender Cycles rig. There's no capture noise and no pose estimation. So every difference I measure comes from the splats.
 - **A controlled comparison.** In the main study both sides of every comparison start from the same bytes and share cameras, seeds and schedule. The only difference between them is the choice I studied. Several model sizes and three training seeds on every object, in two experiments. In one of them each model gets scored on the 150 views it was trained on. The other trains on 120 views and scores just the 30 it never saw.
 - **Training at scale.** One patched OpenSplat binary trains every model for 30,000 steps on NVIDIA L4 GPUs on Google Cloud. The binary is identified by its SHA-256. Every model gets audited against its configuration. The largest follow-up ran under a cost guard, and a watchdog on a second machine was ready to stop the VM.
 - **Scoring that looks at the object.** Depending on the object it fills a median of 7 to 13 % of each image, and as little as 2.5 %. So a whole-image score would mostly grade empty background. Fidelity is object-masked LPIPS, view by view. The scores come from my own EWA splat rasterizer in NumPy, independent of the trainer's CUDA code. Confidence intervals use a hierarchical bootstrap with 10,000 resamples. And I fixed the smallest effect worth reporting before any result existed.
@@ -114,10 +114,6 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 | Offline | On device | Analysis and release |
 |---|---|---|
 | Blender Cycles, OpenSplat (patched, CUDA, LibTorch), PyTorch, LPIPS, a NumPy EWA splat rasterizer, NVIDIA L4 GPUs on Google Cloud, job queues with model checks | Swift, SwiftUI, Metal, RealityKit, visionOS | Python (NumPy, SciPy), hierarchical and crossed bootstraps, variance-component checks, SHA-256 manifests |
-
-## Large scenes
-
-Three large outdoor scenes from the same research have their own case study: [Large-scale Gaussian Splatting](large-scenes/). I captured them myself. The full scenes have 44.5, 23.3 and 24.1 million splats, and on a standalone headset they run with a dynamic level of detail computed on the device.
 
 ## Also public
 
