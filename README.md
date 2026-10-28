@@ -8,11 +8,18 @@ A controlled study of one training choice in 3D Gaussian Splatting, from public 
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
-| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich in 2026. Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards. Results, code and data are not public |
+| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich in 2026, together with [Qing Cheng](https://cvg.cit.tum.de/members/cheq) and supervised at [Prof. Daniel Cremers' Chair of Computer Vision and Artificial Intelligence](https://cvg.cit.tum.de/members/cremers). Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards. Results, code and data are not public |
+
+## In short
+
+- **The problem.** Training choices in 3D Gaussian Splatting mostly get judged by one benchmark number on a desktop GPU. On a standalone headset a model also has to be cheap enough to draw for both eyes at 90 to 100 Hz, within the thermal limits of a headset.
+- **What I did.** I isolated one training choice and followed it from public 3D models to the headset: 470 trained models, scored on the views they were trained on and on views they never saw, and a native visionOS app that measures what each model costs on the device.
+- **The result.** The choice changes both how faithful the model is, on unseen views too, and what it costs the headset to draw it. How much depends strongly on the object. On the device the display mode turned out to be part of the measurement: under the same conditions the 90 and 100 Hz modes moved the median GPU time by up to 55%, so the two are never pooled.
+- **The evidence.** Five recompute commands rebuild every reported number from the raw records, and the offline one runs 374 checks with 0 mismatches. The method and the engineering are on this page, and the timing patch is [an open pull request to MetalSplatter](https://github.com/scier/MetalSplatter/pull/73). The results, code and data are private for now.
 
 **In numbers**
 
-- **470** Gaussian splat models trained, 30,000 steps each. That's **14.1 million** optimisation steps. Every model is identified by its SHA-256 hash and audited against its configuration.
+- **470** Gaussian splat models trained, 30,000 steps each. Every model is identified by its SHA-256 hash and audited against its configuration.
 - **750** ground-truth images. I rendered five public 3D models from **150** directions each, at **2048 × 2048** px in Blender Cycles.
 - **203,520** per-view fidelity scores from my own CPU splat rasterizer. Each score is tied to a hashed model and a camera.
 - **195** accepted 30-second measurement windows on the headset. They came from **75** block attempts in **7** stages, all on one locked build.
@@ -110,31 +117,7 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 
 ## Large scenes
 
-Next to this study I work on large outdoor scenes for standalone headsets. I captured three of them myself and processed the scans in LCC Studio. All three are public on SuperSplat.
-
-| Scene | Splats | Open it |
-|---|---|---|
-| Bismarck Tower near Lake Starnberg, Bavaria, captured from the air and on the ground | 44.5 million | [SuperSplat](https://superspl.at/scene/77398c1a) |
-| Leukerbad, an Alpine town in Valais, Switzerland | 23.3 million | [SuperSplat](https://superspl.at/scene/5fceed98) |
-| Technical University of Munich | 24.1 million | [SuperSplat](https://superspl.at/scene/193ca7e8) |
-
-![A flight over the Gaussian splat model of the Alpine town of Leukerbad](media/leukerbad-twin.gif)
-
-*Leukerbad as a Gaussian splat. The flyover is from the TUM-XR video about the trip, which I made from start to finish.*
-
-On the headset the scenes run with a dynamic level of detail that's computed on the device.
-
-| Leukerbad | Technical University of Munich |
-|---|---|
-| ![The Leukerbad scene on the headset with a dynamic level of detail](media/lod-leukerbad.gif) | ![The TUM scene on the headset with a dynamic level of detail](media/lod-tum.gif) |
-
-The Bismarck Tower scan combines a drone orbit around the tower with scans on the ground.
-
-![The drone's live view on its controller during the orbit around the Bismarck Tower](media/drone-orbit.gif)
-
-*The drone's live view on the controller, played twice as fast.*
-
-The level-of-detail code isn't public yet.
+Three large outdoor scenes from the same research have their own case study: [Large-scale Gaussian Splatting](large-scenes/). I captured them myself. The full scenes have 44.5, 23.3 and 24.1 million splats, and on a standalone headset they run with a dynamic level of detail computed on the device.
 
 ## Also public
 
