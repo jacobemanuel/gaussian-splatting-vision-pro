@@ -8,7 +8,7 @@ Three large outdoor scenes I captured myself, turned into Gaussian splats and ru
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
-| Capture from the air and on the ground, processing in LCC Studio, the level of detail on the headset and the Leukerbad video | Research at the Technical University of Munich in 2026, captured with TUM-XR. The standalone headset is an Apple Vision Pro | Three scenes with 91.9 million splats together. The largest has 44.5 million splats in a 1.01 GB file | The three full scenes on SuperSplat and the recordings on this page. The level-of-detail code is private for now |
+| Capture from the air and on the ground, processing in LCC Studio, the level of detail on the headset and the editing of the TUM-XR video about Leukerbad | Research at the Technical University of Munich in 2026, captured with TUM-XR. The standalone headset is an Apple Vision Pro | Three scenes with 91.9 million splats together. The largest has 44.5 million splats in a 1.01 GB file | The three full scenes on SuperSplat and the recordings on this page. The level-of-detail code is private for now |
 
 ## In short
 
@@ -45,7 +45,7 @@ The Bismarck Tower scene combines scans on the ground with a drone flight that c
 
 *The drone's live view on the controller, played twice as fast.*
 
-The flight over Leukerbad comes from the TUM-XR video about the trip, which I made from start to finish.
+The flight over Leukerbad comes from the TUM-XR video about the trip, which I edited end to end.
 
 ![A flight over the Gaussian splat model of Leukerbad](media/leukerbad-twin.gif)
 
