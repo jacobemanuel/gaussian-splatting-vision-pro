@@ -8,7 +8,7 @@ A controlled study of one training choice in 3D Gaussian Splatting, from public 
 
 | My role | Setting | Scale | Public scope |
 |---|---|---|---|
-| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich in 2026, together with [Qing Cheng](https://cvg.cit.tum.de/members/cheq) and supervised at [Prof. Daniel Cremers' Chair of Computer Vision and Artificial Intelligence](https://cvg.cit.tum.de/members/cremers). Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards. Results, code and data are not public |
+| End to end: study design, training and scoring pipeline, the visionOS measurement app, every session on the headset, statistics and the release | Research at the Technical University of Munich in 2026, together with [Qing Cheng](https://cvg.cit.tum.de/members/cheq) and supervised at [Prof. Daniel Cremers' Chair of Computer Vision and Artificial Intelligence](https://cvg.cit.tum.de/members/cremers). Apple Vision Pro and NVIDIA L4 GPUs on Google Cloud | 470 trained splat models, 203,520 per-view scores, 195 measurement windows on the headset, a 6.4 GB release of 3,553 files | Question, method, engineering and evidence standards, and the view rig as tested code. Results, the rest of the code and data are not public |
 
 ## In short
 
@@ -46,6 +46,10 @@ flowchart LR
     S --> A["Analysis<br/>plan hashed first"]
     I --> A
 ```
+
+![The 150 cameras on a Fibonacci sphere around the jet engine model, each showing the picture it takes](media/view-rig.gif)
+
+*The view rig around one of the CAD models: 150 cameras on a Fibonacci sphere, each with the picture it takes.*
 
 - **Ground truth I control.** Five detailed public CAD models. They go from a gearbox with a cutaway housing and a turbofan engine to a Formula 1 car and an industrial plant with 13,129 mesh parts and 2.56 million triangles. Each is rendered from 150 directions spread evenly over a Fibonacci sphere, with one Blender Cycles rig. There's no capture noise and no pose estimation. So every difference I measure comes from the splats.
 - **A controlled comparison.** In the main study both sides of every comparison start from the same bytes and share cameras, seeds and schedule. The only difference between them is the choice I studied. Several model sizes and three training seeds on every object, in two experiments. In one of them each model gets scored on the 150 views it was trained on. The other trains on 120 views and scores just the 30 it never saw.
@@ -119,9 +123,15 @@ For engineering the study is a complete path from a 3D asset to measurements on 
 
 The timing patch from the measurement app is offered upstream as [MetalSplatter pull request #73](https://github.com/scier/MetalSplatter/pull/73).
 
+## Code sample
+
+The view rig is in [`code/view-rig`](code/view-rig): the 150 directions on a Fibonacci sphere, a camera on each one looking at the model's centre, and the poses in the Y-up world the trainer reads. It gives the same camera poses as the study's render script, and its 12 tests run on every change:
+
+[![view-rig tests](https://github.com/jacobemanuel/gaussian-splatting-vision-pro/actions/workflows/view-rig.yml/badge.svg)](https://github.com/jacobemanuel/gaussian-splatting-vision-pro/actions/workflows/view-rig.yml)
+
 ## Scope
 
-This page is a portfolio case study of the question, the method and the engineering. The results, the code, the trained models and the per-view records are not published here. I generated all of the data myself, from public models.
+This page is a portfolio case study of the question, the method and the engineering. Apart from the view rig, the results, the code, the trained models and the per-view records are not published here. I generated all of the data myself, from public models.
 
 ## Credits
 
